@@ -2,11 +2,11 @@
 
 Repositorio base del proyecto práctico **Integridad de Datos en Big Data** usando un ecosistema **Hadoop dockerizado** del aula.
 
-- 📄 Enunciado: `docs/enunciado_proyecto.md`
-- ✅ Rúbrica: `docs/rubric.md`
-- 🧭 Pistas rápidas: `docs/pistas.md`
-- 🧾 Entrega (individual): `docs/entrega.md`
-- 📎 Plantilla de evidencias: `docs/evidencias.md`
+-  Enunciado: `docs/enunciado_proyecto.md`
+-  Rúbrica: `docs/rubric.md`
+-  Pistas rápidas: `docs/pistas.md`
+-  Entrega (individual): `docs/entrega.md`
+-  Plantilla de evidencias: `docs/evidencias.md`
 
 ---
 
