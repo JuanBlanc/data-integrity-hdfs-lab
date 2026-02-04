@@ -1,0 +1,14 @@
+# Datos generados localmente (demasiado grandes para git)
+data_local/
+
+# Ficheros CSV generados por notebooks
+*.csv
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
