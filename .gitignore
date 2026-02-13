@@ -1,8 +1,15 @@
 # Datos generados localmente (demasiado grandes para git)
 data_local/
 
+# Auditorías y métricas autogeneradas por los scripts
+docker/clusterA/notebooks/audit/
+docker/clusterA/notebooks/audit/fsck/
+
 # Ficheros CSV generados por notebooks
-*.csv
+docker/clusterA/notebooks/*.csv
+
+# Jupyter checkpoints
+docker/clusterA/notebooks/.ipynb_checkpoints/
 
 # Python
 __pycache__/

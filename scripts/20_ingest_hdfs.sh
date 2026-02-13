@@ -44,8 +44,8 @@ docker exec -it $NN_CONTAINER bash -lc "hdfs dfs -put -f /tmp/iot_${DT_COMPACT}.
 END_IOT=$(date +%s)
 echo "[ingest] IoT subido en $((END_IOT - START_IOT)) segundos."
 
-# Limpiar temporales del contenedor
-docker exec -it $NN_CONTAINER bash -lc "rm -f /tmp/logs_${DT_COMPACT}.log /tmp/iot_${DT_COMPACT}.jsonl"
+# Limpiar temporales del contenedor (como root para evitar problemas de permisos)
+docker exec -u root $NN_CONTAINER rm -f /tmp/logs_${DT_COMPACT}.log /tmp/iot_${DT_COMPACT}.jsonl
 
 # Evidencias
 echo ""

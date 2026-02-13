@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Inicio medición de tiempo
+START_TIME=$SECONDS
+
 OUT_DIR=${OUT_DIR:-./data_local}
 DT=${DT:-$(date +%F)}
 DT_COMPACT=${DT//-/}
@@ -86,4 +89,11 @@ echo ""
 echo "[generate] Resumen:"
 du -sh "$OUT_DIR/$DT"/*
 echo ""
-echo "[generate] Completado."
+
+# Calcular tiempo total
+ELAPSED=$((SECONDS - START_TIME))
+MINS=$((ELAPSED / 60))
+SECS=$((ELAPSED % 60))
+echo "============================================"
+echo "[generate] Completado en ${MINS}m ${SECS}s (${ELAPSED} segundos)"
+echo "============================================"

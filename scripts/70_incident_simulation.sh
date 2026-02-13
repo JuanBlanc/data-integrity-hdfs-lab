@@ -39,8 +39,12 @@ echo "[incident] Deteniendo DataNode: $DN_CONTAINER"
 docker stop $DN_CONTAINER
 
 echo "[incident] DataNode $DN_CONTAINER detenido."
-echo "[incident] Esperando 15 segundos para que HDFS detecte la caída..."
-sleep 15
+echo "[incident] Esperando 15 minutos para que HDFS detecte la caída..."
+sleep 900
+
+# Forzar refresco del estado de DataNodes
+echo "[incident] Forzando refresco del estado de HDFS..."
+docker exec $NN_CONTAINER bash -lc "hdfs dfsadmin -refreshNodes" 2>/dev/null || true
 
 # ---------- FASE 3: Evidencia del impacto ----------
 echo ""
@@ -59,22 +63,34 @@ echo ""
 echo "============================================"
 echo "[incident] Resumen del impacto"
 echo "============================================"
-docker exec -it $NN_CONTAINER bash -lc "
+docker exec $NN_CONTAINER bash -lc "
 PRE=/tmp/fsck_pre_incident_${DT}.txt
 POST=/tmp/fsck_post_incident_${DT}.txt
+
+# Función para extraer métricas del fsck
+extract_metrics() {
+    local file=\$1
+    local datanodes=\$(grep 'Number of data-nodes' \$file | awk '{print \$NF}')
+    local corrupt=\$(grep 'Corrupt blocks:' \$file | awk '{print \$NF}')
+    local missing=\$(grep 'Missing blocks:' \$file | head -1 | awk '{print \$NF}')
+    local under=\$(grep 'Under-replicated blocks:' \$file | awk '{print \$NF}')
+    local status=\$(grep -o 'Status: [A-Z]*' \$file | awk '{print \$2}')
+    echo \"  DataNodes:        \${datanodes:-N/A}\"
+    echo \"  Status:           \${status:-N/A}\"
+    echo \"  Corrupt blocks:   \${corrupt:-0}\"
+    echo \"  Missing blocks:   \${missing:-0}\"
+    echo \"  Under-replicated: \${under:-0}\"
+}
+
 echo 'ANTES del incidente:'
-echo '  CORRUPT:          '\$(grep -ci 'CORRUPT' \$PRE 2>/dev/null || echo 0)
-echo '  MISSING:          '\$(grep -ci 'MISSING' \$PRE 2>/dev/null || echo 0)
-echo '  UNDER_REPLICATED: '\$(grep -ci 'Under replicated' \$PRE 2>/dev/null || echo 0)
+extract_metrics \$PRE
 echo ''
 echo 'DESPUÉS del incidente:'
-echo '  CORRUPT:          '\$(grep -ci 'CORRUPT' \$POST 2>/dev/null || echo 0)
-echo '  MISSING:          '\$(grep -ci 'MISSING' \$POST 2>/dev/null || echo 0)
-echo '  UNDER_REPLICATED: '\$(grep -ci 'Under replicated' \$POST 2>/dev/null || echo 0)
+extract_metrics \$POST
 "
 
 # Copiar evidencias a notebooks
-docker exec -it $NN_CONTAINER bash -lc "
+docker exec $NN_CONTAINER bash -lc "
 mkdir -p /media/notebooks/audit/fsck/$DT
 cp /tmp/fsck_pre_incident_${DT}.txt /media/notebooks/audit/fsck/$DT/fsck_pre_incident.txt
 cp /tmp/fsck_post_incident_${DT}.txt /media/notebooks/audit/fsck/$DT/fsck_post_incident.txt

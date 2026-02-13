@@ -93,18 +93,6 @@ docker exec -it $NN_CONTAINER bash -lc "cat $RESULTS_CSV"
 # Guardar en HDFS
 docker exec -it $NN_CONTAINER bash -lc "hdfs dfs -put -f $RESULTS_CSV /audit/metrics/$DT/replication_metrics.csv"
 
-# ---------- FASE 4: Resumen de tiempos del pipeline ----------
-echo ""
-echo "[metrics] === FASE 4: Resumen de tiempos del pipeline ==="
-echo ""
-echo "Los tiempos de cada fase se muestran en la salida de cada script:"
-echo "  - 10_generate_data.sh → tiempo de generación"
-echo "  - 20_ingest_hdfs.sh   → tiempo de ingesta (logs + IoT)"
-echo "  - 40_backup_copy.sh   → tiempo de copia (logs + IoT)"
-echo "  - 30_fsck_audit.sh    → tiempo de auditoría"
-echo ""
-echo "Registra estos tiempos en docs/evidencias.md y en el notebook."
-
 # Copiar al volumen de notebooks
 docker exec -it $NN_CONTAINER bash -lc "
 mkdir -p /media/notebooks/audit/metrics/$DT

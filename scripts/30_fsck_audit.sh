@@ -39,9 +39,9 @@ echo "============================================"
 
 docker exec -it $NN_CONTAINER bash -lc "
 FSCK_FILE=/tmp/fsck_data_${DT}.txt
-CORRUPT=\$(grep -ci 'CORRUPT' \$FSCK_FILE 2>/dev/null || echo 0)
-MISSING=\$(grep -ci 'MISSING' \$FSCK_FILE 2>/dev/null || echo 0)
-UNDER_REP=\$(grep -ci 'Under replicated' \$FSCK_FILE 2>/dev/null || echo 0)
+CORRUPT=\$(grep 'Corrupt blocks:' \$FSCK_FILE 2>/dev/null | awk '{sum+=\$NF} END {print sum+0}')
+MISSING=\$(grep 'Missing blocks:' \$FSCK_FILE 2>/dev/null | awk '{sum+=\$NF} END {print sum+0}')
+UNDER_REP=\$(grep 'Under-replicated blocks:' \$FSCK_FILE 2>/dev/null | awk '{sum+=\$NF} END {print sum+0}')
 HEALTHY=\$(grep -c 'HEALTHY' \$FSCK_FILE 2>/dev/null || echo 0)
 TOTAL_SIZE=\$(grep 'Total size:' \$FSCK_FILE 2>/dev/null || echo 'N/A')
 TOTAL_FILES=\$(grep 'Total files:' \$FSCK_FILE 2>/dev/null || echo 'N/A')
